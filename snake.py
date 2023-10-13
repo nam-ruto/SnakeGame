@@ -14,7 +14,7 @@ BACKGROUND_COLOR = "#000000"
 
 # Initial figure
 score = 0
-direction = "down"
+direction = "right"
 
 class Snake:
     def __init__(self, canvas):
@@ -28,15 +28,27 @@ class Snake:
             block = canvas.create_rectangle(x, y, x + SPACE_SIZE, y  + SPACE_SIZE, fill=SNAKE_COLOR, tags="snake")
             self.blocks.append(block)
 
+    def snakeMoving(self, canvas, snake, food):
+        x, y = self.coordinates[0]
+        if direction == "up":
+            y -= SPACE_SIZE
+        elif direction == "down":
+            y += SPACE_SIZE
+        elif direction == "right":
+            x += SPACE_SIZE
+        elif direction == "left":
+            y -= SPACE_SIZE
+        snake.coordinates.insert(0, (x, y))
+        block = canvas.create_rectangle(x, y, x + SPACE_SIZE, y  + SPACE_SIZE, fill=SNAKE_COLOR, tags="snake")
+        snake.blocks.insert(0, block)
+        window.after(SPEED, self.snakeMoving, canvas, snake, food)
+
 class Food:
     def __init__(self, canvas):
         x = random.randint(0, (WIDTH / SPACE_SIZE) - 1) * SPACE_SIZE
         y = random.randint(0, (HEIGHT / SPACE_SIZE) - 1) * SPACE_SIZE
         self.coordinates = [x, y]
         canvas.create_oval(x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill=FOOD_COLOR, tags="food")
-
-def moving():
-    pass
 
 def changeDirection():
     pass
@@ -59,5 +71,6 @@ if __name__ == "__main__":
 
     snake = Snake(canvas)
     food = Food(canvas)
-
+    snake.snakeMoving(canvas, snake, food)
+    
     window.mainloop()
